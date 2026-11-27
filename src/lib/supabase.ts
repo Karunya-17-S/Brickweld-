@@ -15,6 +15,7 @@ export const supabase = createClient(url ?? "http://localhost", key ?? "missing"
 export function friendlyError(e: unknown): string {
   const err = e as { message?: string; code?: string; details?: string } | null;
   const msg = err?.message ?? String(e ?? "Something went wrong");
+  if ((e as { userFacing?: boolean } | null)?.userFacing) return msg;
   if (err?.code === "23505" || /duplicate key/i.test(msg)) return "This already exists (same name / number / date). Use a different value or edit the existing record.";
   if (err?.code === "42501" || /row-level security|permission denied/i.test(msg)) return "You don't have permission to do this.";
   if (/violates check constraint "txn_required_links"/.test(msg)) return "Fill in the required links (project, party, worker or category) for this entry.";

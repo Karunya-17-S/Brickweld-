@@ -43,10 +43,10 @@ async function adminCall(body: Row) {
     let msg = error.message;
     try { const j = await (error as { context?: Response }).context?.json(); if (j?.error) msg = j.error; } catch { /* keep msg */ }
     if (/Failed to send|not found|404/i.test(msg)) msg = "User management isn't switched on yet: deploy the admin-users Edge Function in Supabase (README → step 5).";
-    throw new Error(msg);
+    throw Object.assign(new Error(msg), { userFacing: true });
   }
-  if (data?.error) throw new Error(data.error);
-  return data;
+  if (data?.error) throw Object.assign(new Error(data.error), { userFacing: true });
+  return data as Row;
 }
 
 function Users({ md }: { md: boolean }) {
@@ -93,7 +93,12 @@ function Users({ md }: { md: boolean }) {
 function AddUser({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [f, setF] = useState<Row>({});
   useEffect(() => { if (open) setF({ full_name: "", email: "", phone: "", role: "supervisor", password: "" }); }, [open]);
-  const save = useAction(() => adminCall({ action: "create", ...f }), "User created — share the email and password with them");
+  const save = useAction(async () => {
+    // 1) create (or re-use) the login, 2) attach the role as the MD through the database
+    const r = await adminCall({ action: "create", full_name: f.full_name, email: f.email, phone: f.phone, password: f.password });
+    await rpc("set_user_role", { p_user: r.id, p_role: f.role });
+    return r;
+  }, (r: Row) => r.existed ? "This email already had a login — password and role updated" : "User created — share the email and password with them");
   return (
     <Modal open={open} onClose={onClose} width="max-w-md" title="Add user"
       footer={<><button className="btn-secondary" onClick={onClose}>Cancel</button><button className="btn-primary" disabled={save.isPending || !f.full_name || !f.email || (f.password ?? "").length < 8} onClick={() => save.mutate(undefined, { onSuccess: onClose })}>{save.isPending && <Spinner className="text-white" />}Create</button></>}>

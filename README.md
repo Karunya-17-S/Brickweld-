@@ -65,7 +65,7 @@ You need: a Supabase account, a Vercel account, Node 18+ on your PC, and this fo
 ### Step 1 — Create a new Supabase project
 supabase.com → **New project** → name `brickweld`, region **Mumbai (ap-south-1)**, set a strong DB password → Create.
 
-### Step 2 — Create the database (run the 5 migration files in order)
+### Step 2 — Create the database (run the 6 migration files in order)
 
 **Option A — SQL Editor (no tools needed):**
 Supabase → **SQL Editor** → New query. Paste and **Run** each file in this exact order:
@@ -76,6 +76,7 @@ supabase/migrations/0002_logic.sql
 supabase/migrations/0003_audit_dashboard.sql
 supabase/migrations/0004_security.sql
 supabase/migrations/0005_seed.sql
+supabase/migrations/0006_user_setup_fix.sql
 ```
 
 Each one should say *Success*.
