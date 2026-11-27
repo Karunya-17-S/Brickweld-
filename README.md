@@ -101,14 +101,21 @@ INSERT INTO public.user_roles (user_id, role)
 SELECT id, 'md' FROM auth.users WHERE email = 'md@brickweld.in';
 ```
 
-### Step 5 — Deploy the user-management function
+### Step 5 — Deploy the user-management function (needed for Settings → Add user)
 This lets the MD add users and reset passwords from **Settings → Users**. It needs no secrets of your own, because Supabase provides them to the function automatically.
 
+**Option A — Supabase dashboard (no tools needed):**
+1. Supabase → **Edge Functions** → **Deploy a new function** → **Via Editor**.
+2. Function name: `admin-users`. It must be exactly this.
+3. Delete the sample code and paste the whole of `supabase/functions/admin-users/index.ts`.
+4. Click **Deploy function**. Leave "Verify JWT" **on**.
+
+**Option B — CLI (PowerShell, inside this folder):**
 ```powershell
+npx supabase login
+npx supabase link --project-ref YOUR-PROJECT-REF
 npx supabase functions deploy admin-users
 ```
-
-(If you skipped `link` in step 2, run `npx supabase link --project-ref YOUR-PROJECT-REF` first.)
 
 ### Step 6 — Put it on Vercel
 1. Push this folder to a new GitHub repo, for example in `GraySolutions-org`:

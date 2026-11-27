@@ -42,7 +42,7 @@ async function adminCall(body: Row) {
   if (error) {
     let msg = error.message;
     try { const j = await (error as { context?: Response }).context?.json(); if (j?.error) msg = j.error; } catch { /* keep msg */ }
-    if (/Failed to send|not found|404/i.test(msg)) msg = "The admin-users function isn't deployed yet. See README → step 6.";
+    if (/Failed to send|not found|404/i.test(msg)) msg = "User management isn't switched on yet: deploy the admin-users Edge Function in Supabase (README → step 5).";
     throw new Error(msg);
   }
   if (data?.error) throw new Error(data.error);

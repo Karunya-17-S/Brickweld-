@@ -33,7 +33,7 @@ export function LoginPage() {
         <form onSubmit={submit} className="space-y-4 rounded-2xl bg-white p-7 shadow-2xl">
           <div>
             <h1 className="text-lg font-semibold">{mode === "login" ? "Sign in" : "Reset password"}</h1>
-            <p className="text-sm text-ink-500">{mode === "login" ? "Use the account your MD created for you." : "We'll email you a reset link."}</p>
+            <p className="text-sm text-ink-500">{mode === "login" ? "One sign-in for everyone — MD, Accountant and Site supervisor. The app opens your own screens after you sign in." : "We'll email you a reset link."}</p>
           </div>
           <Field label="Email"><Input type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} /></Field>
           {mode === "login" && <Field label="Password"><Input type="password" autoComplete="current-password" required value={password} onChange={e => setPassword(e.target.value)} /></Field>}
